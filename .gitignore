@@ -1,0 +1,7 @@
+/.cache/
+/.lsp-session-v1
+/auto-save-list/
+/forge-database.sqlite
+/init.el.~*~
+/straight/
+/var/
