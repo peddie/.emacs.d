@@ -233,7 +233,12 @@
   ;; TODO(MP) configure this to work more like ido did when looking
   ;; for files
   :config (selectrum-mode +1)
-  (setq selectrum-max-window-height 12))
+  (setq selectrum-max-window-height 12)
+  :bind
+  ;; This pops the minibuffer completion list into its own buffer like
+  ;; ido does if you hammer TAB enough
+  (:map minibuffer-local-map
+        ("M-\t" . switch-to-completions)))
 
 (use-package selectrum-prescient
   :after selectrum
@@ -379,7 +384,15 @@
   :init
 
   ;; Optionally replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
+  (setq prefix-help-command #'embark-prefix-help-command
+        ;; This arguably belongs at a higher scope.
+        ;;
+        ;; This is mainly useful for invoking `embark` commands that
+        ;; aren't part of the built-in embark-act menu.  Maybe there's
+        ;; a better way, but ironically, great completion and
+        ;; marginalia makes it really convenient to learn about
+        ;; `embark` this way.
+        enable-recursive-minibuffers 't)
 
   :config
 
