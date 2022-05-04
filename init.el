@@ -511,6 +511,7 @@
 (use-package markdown-mode)
 (use-package cmake-mode)
 (use-package stan-mode)
+(use-package protobuf-mode)
 
 (use-package elpy)
 ;; (use-package ein)
