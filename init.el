@@ -2,11 +2,14 @@
 
 (setq gc-cons-threshold 128000000)
 
+(defvar --backup-directory (concat user-emacs-directory "backups"))
+
 ;; General configuration
 (defun reasonable-settings ()
   (progn
     (global-font-lock-mode 1)
     (menu-bar-mode -1)
+    ;; TODO(MP): some of these need to be in a new-frame hook of some kind
     (scroll-bar-mode -1)
     (tool-bar-mode -1)
     (auto-compression-mode 1)
@@ -59,9 +62,21 @@
     (setq frame-title-format "emacs - %b")
 					;(normal-top-level-add-subdirs-to-load-path)
 
-;;; backup files
-    (setq make-backup-files t)
-    (setq version-control t)
+    ;; backup files
+    (if (not (file-exists-p --backup-directory))
+        (make-directory --backup-directory t))
+    (setq backup-directory-alist `(("." . ,--backup-directory)))
+    (setq make-backup-files t               ; backup of a file the first time it is saved.
+      backup-by-copying t               ; don't clobber symlinks
+      version-control t                 ; version numbers for backup files
+      delete-old-versions t             ; delete excess backup files silently
+      kept-old-versions 6               ; oldest versions to keep when a new numbered backup is made (default: 2)
+      kept-new-versions 9               ; newest versions to keep when a new numbered backup is made (default: 2)
+      delete-auto-save-files t
+      auto-save-default t               ; auto-save every buffer that visits a file
+      auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
+      auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+      )
     ;; (setq backup-directory-alist `((".*" . ,(concat emacs-root "backups/"))))
     (size-indication-mode)
     (desktop-save-mode 1)
@@ -76,9 +91,9 @@
         ad-do-it))
     (setq default-frame-alist
           '((frame-title-format . "emacs - %b")
-            (menu-bar-mode . 0)
-            (scroll-bar-mode . 0)
-            (tool-bar-mode . 0)))))
+            (menu-bar-mode . -1)
+            (scroll-bar-mode . -1)
+            (tool-bar-mode . -1)))))
 
 (reasonable-settings)
 
@@ -232,13 +247,13 @@
 (use-package selectrum
   ;; TODO(MP) configure this to work more like ido did when looking
   ;; for files
-  :config (selectrum-mode +1)
-  (setq selectrum-max-window-height 12)
+  :init (selectrum-mode +1)
+  (setq selectrum-max-window-height 32)
   :bind
   ;; This pops the minibuffer completion list into its own buffer like
   ;; ido does if you hammer TAB enough
   (:map minibuffer-local-map
-        ("M-\t" . switch-to-completions)))
+        ([meta tab] . switch-to-completions)))
 
 (use-package selectrum-prescient
   :after selectrum
@@ -251,7 +266,7 @@
   (prog-mode . marginalia-mode)
   :bind (:map minibuffer-local-map
               ;; Turn margin notes on and off
-              ("M-A" . marginalia-cycle)))
+              ([meta A] . marginalia-cycle)))
 
 ;; Example configuration for Consult
 (use-package consult
@@ -296,7 +311,7 @@
          ("M-s k" . consult-keep-lines)
          ("M-s u" . consult-focus-lines)
          ;; Isearch integration
-         ;; ("M-s e" . consult-isearch-history)
+         ("M-s e" . consult-isearch-history)
          :map isearch-mode-map
          ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
          ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
@@ -338,7 +353,7 @@
   ;; Optionally configure preview. The default value
   ;; is 'any, such that any key triggers the preview.
   ;; (setq consult-preview-key 'any)
-  ;; (setq consult-preview-key (kbd "M-."))
+  ;; (setq consult-preview-key (kbd "M-.")
   ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
   ;; For some commands and buffer sources it is useful to configure the
   ;; :preview-key on a per-command basis using the `consult-customize' macro.
@@ -444,7 +459,7 @@
   :bind (:map flycheck-mode
               ("M-n" . flycheck-next-error)
               ("M-p" . flycheck-previous-error))
-  :config
+  :init
   (set-face-attribute 'flycheck-warning nil
                       :underline "orange" :weight 'bold)
   (set-face-attribute 'flycheck-error nil
@@ -464,8 +479,9 @@
           "--header-insertion-decorators=0"
           "--header-insertion=never"
           "--clang-tidy"
+          "--malloc-trim"
           "--background-index"
-          "--query-driver=/nix/store/h463mijlb1p9v7akx2b9r7d4jz9jffjm-gcc-wrapper-11.2.0/bin/c++,/nix/store/0sk7aa616ihk43r8fmc770s5vr9nqwij-clang-wrapper-13.0.0/bin/clang++"))
+          "--query-driver=/nix/store/r23arlmpbc3bmip7q9rm19y1q4xq8lf0-clang-wrapper-14.0.1/bin/clang++"))
   :bind
   (:map lsp-mode-map
         ("C-c l p" . lsp-describe-thing-at-point)
@@ -512,9 +528,10 @@
 
 (use-package haskell-mode)
 
-(use-package ess)
-(use-package ess-smart-underscore
-  :after ess)
+(use-package ess
+  :init (ess-toggle-underscore nil))
+;; (use-package ess-smart-underscore
+;;   :after ess)
 (use-package poly-R
   :after ess)
 
@@ -525,6 +542,7 @@
 (use-package cmake-mode)
 (use-package stan-mode)
 (use-package protobuf-mode)
+(use-package jenkinsfile-mode)
 
 (use-package elpy)
 ;; (use-package ein)
@@ -553,6 +571,10 @@
 
 ;; (require 're-builder)
     ;; (setq reb-re-syntax 'string)
+
+(defun my-c++-setup ()
+   (c-set-offset 'innamespace [0]))
+(add-hook 'c++-mode-hook 'my-c++-setup)
 
 (defun unfill-paragraph ()
   (interactive)
@@ -589,6 +611,37 @@ one step, else indent 'correctly'"
      (list (line-beginning-position)
 	   (line-beginning-position 2)))))
 
+;;; https://anirudhsasikumar.net/blog/2005.01.21.html
+(define-minor-mode sensitive-mode
+  "For sensitive files like password lists.
+It disables backup creation and auto saving.
+
+With no argument, this command toggles the mode.
+Non-null prefix argument turns on the mode.
+Null prefix argument turns off the mode."
+  ;; The initial value.
+  nil
+  ;; The indicator for the mode line.
+  " Sensitive"
+  ;; The minor mode bindings.
+  nil
+  (if (symbol-value sensitive-mode)
+      (progn
+	;; disable backups
+	(set (make-local-variable 'backup-inhibited) t)	
+	;; disable auto-save
+	(if auto-save-default
+	    (auto-save-mode -1)))
+    ;resort to default value of backup-inhibited
+    (kill-local-variable 'backup-inhibited)
+    ;resort to default auto save setting
+    (if auto-save-default
+	(auto-save-mode 1))))
+
+(setq auto-mode-alist
+      (append '(("\\.gpg$" . sensitive-mode)
+                (".authinfo$" . sensitive-mode))
+               auto-mode-alist))
 
 (garbage-collect)
 ;; 64 MB should be enough for anybody
