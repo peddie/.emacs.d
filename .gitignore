@@ -3,5 +3,7 @@
 /auto-save-list/
 /forge-database.sqlite
 /init.el.~*~
-/straight/
+/straight/repos
+/straight/build
+/straight/build-cache.el
 /var/
