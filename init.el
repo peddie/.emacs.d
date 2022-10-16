@@ -557,6 +557,7 @@
 (use-package stan-mode)
 (use-package protobuf-mode)
 (use-package jenkinsfile-mode)
+(use-package dockerfile-mode)
 
 (use-package elpy
   :bind
