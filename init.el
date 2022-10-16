@@ -548,7 +548,10 @@
 
 (use-package yaml-mode)
 (use-package bazel)
-(use-package nix-mode)
+(use-package nix-mode
+  :bind
+  (:map nix-mode-map
+        ("C-c \\" . nix-format-buffer)))
 (use-package markdown-mode)
 (use-package cmake-mode)
 (use-package stan-mode)
