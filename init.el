@@ -471,6 +471,7 @@
   :hook
   (haskell-mode . lsp)
   (c++-mode . lsp)
+  (python-mode . lsp)
   (lsp-mode . lsp-enable-which-key-integration)
   :init
   (setq lsp-clients-clangd-args
@@ -494,6 +495,16 @@
   :config
   (setq read-process-output-max (* 1024 8192)
         lsp-enable-suggest-server-download nil)
+  (lsp-register-custom-settings
+   '(;; `mypy` integration seems nice, but a) you need to install a
+     ;; lot of type stubs, and even then, many of our libs don't have
+     ;; type info available and b) it doesn't seem to ever actually
+     ;; identify anything
+     ;;
+     ;; ("pyls.plugins.pyls_mypy.enabled" t t)
+     ;; ("pyls.plugins.pyls_mypy.live_mode" nil t)
+     ("pyls.plugins.pyls_black.enabled" t t)
+     ("pyls.plugins.pyls_isort.enabled" t t)))
   :commands lsp)
 
 (use-package lsp-ui
@@ -544,7 +555,12 @@
 (use-package protobuf-mode)
 (use-package jenkinsfile-mode)
 
-(use-package elpy)
+(use-package elpy
+  :bind
+  (:map elpy-mode-map
+        ("M-n" . elpy-flymake-next-error)
+        ("M-p" . elpy-flymake-previous-error)
+        ("C-M-\\" . elpy-black-fix-code)))
 ;; (use-package ein)
 ;; TODO(MP): how to track down mumamo?
 ;;
