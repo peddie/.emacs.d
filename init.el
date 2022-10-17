@@ -459,7 +459,7 @@
           "--clang-tidy"
           "--malloc-trim"
           "--background-index"
-          "--query-driver=/nix/store/r23arlmpbc3bmip7q9rm19y1q4xq8lf0-clang-wrapper-14.0.1/bin/clang++"))
+          "--query-driver=/nix/store/hm20h5qvsqvbv8bkbppxn0p4rqfgsnpc-clang-wrapper-14.0.1/bin/clang++"))
   :bind
   (:map lsp-mode-map
         ("C-c l p" . lsp-describe-thing-at-point)
