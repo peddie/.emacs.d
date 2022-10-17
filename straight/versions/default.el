@@ -68,6 +68,7 @@
  ("s.el" . "e957dcb0677da18b2bb60ad867db5df5c35b5616")
  ("selectrum" . "810ea697bdd559d97b86b795e01769cddfa3daf2")
  ("smart-mode-line" . "abcb0ab6f7110a03d6c7428bae67cf8731496433")
+ ("sort-words.el" . "7b6e108f80237363faf7ec28b2c58dec270b8601")
  ("spinner" . "634529bb3173e09b37499f636de70abf29d9fa8a")
  ("stan-mode" . "150bbbe5fd3ad2b5a3dbfba9d291e66eeea1a581")
  ("straight.el" . "f21103d97d180fba0b6e2e86ebb0b6269219ef2c")
@@ -80,4 +81,4 @@
  ("yaml-mode" . "9969207f60b69e42c573a63764faeb9caaccb2bf")
  ("yaml.el" . "73fde9d8fbbaf2596449285df9eb412ae9dd74d9")
  ("yasnippet" . "5cbdbf0d2015540c59ed8ee0fcf4788effdf75b6"))
-:beta
+:gamma

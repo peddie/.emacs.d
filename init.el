@@ -426,6 +426,8 @@
    ("C-c y y" . aya-expand)
    ("C-c y i" . aya-open-line)))
 
+(use-package sort-words)
+
 ;;; LSP setup
 
 (use-package project)
