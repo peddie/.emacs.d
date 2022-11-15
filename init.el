@@ -516,6 +516,8 @@
 
 (use-package haskell-mode)
 
+(use-package rust-mode)
+
 (use-package ess
   :config (ess-toggle-underscore nil))
 ;; (use-package ess-smart-underscore
