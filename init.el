@@ -79,7 +79,7 @@
       )
     ;; (setq backup-directory-alist `((".*" . ,(concat emacs-root "backups/"))))
     (size-indication-mode)
-    (desktop-save-mode 1)
+    ;; (desktop-save-mode 1)
     (setq-default indent-tabs-mode nil)
     (defadvice yes-or-no-p (around prevent-dialog activate)
       "Prevent yes-or-no-p from activating a dialog"
