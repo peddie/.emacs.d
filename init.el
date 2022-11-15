@@ -517,7 +517,7 @@
 (use-package haskell-mode)
 
 (use-package ess
-  :init (ess-toggle-underscore nil))
+  :config (ess-toggle-underscore nil))
 ;; (use-package ess-smart-underscore
 ;;   :after ess)
 (use-package poly-R
