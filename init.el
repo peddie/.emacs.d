@@ -541,7 +541,7 @@
   (:map elpy-mode-map
         ("M-n" . elpy-flymake-next-error)
         ("M-p" . elpy-flymake-previous-error)
-        ("C-M-\\" . elpy-black-fix-code)))
+        ("C-c \\" . elpy-black-fix-code)))
 ;; (use-package ein)
 ;; TODO(MP): how to track down mumamo?
 ;;
