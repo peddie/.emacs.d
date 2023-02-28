@@ -314,9 +314,6 @@
   ;; This adds thin lines, sorting and hides the mode line of the window.
   (advice-add #'register-preview :override #'consult-register-window)
 
-  ;; Optionally replace `completing-read-multiple' with an enhanced version.
-  (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
-
   ;; Use Consult to select xref locations with preview
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
@@ -497,22 +494,27 @@
   (setq lsp-ui-sideline-diagnostic-max-line-length 100
         lsp-ui-sideline-diagnostic-max-lines 5))
 
-(use-package treemacs)
+; (use-package treemacs)
 
-(use-package lsp-treemacs
-  :after (lsp-mode treemacs)
-  :config (lsp-treemacs-sync-mode 1)
-  :bind
-  (:map lsp-mode-map
-        ("C-c t r" . lsp-treemacs-references)
-        ("C-c t i" . lsp-treemacs-implementations)
-        ("C-c t e" . lsp-treemacs-errors-list)
-        ("C-c t t" . lsp-treemacs-type-hierarchy)
-        ("C-c t h" . lsp-treemacs-call-hierarchy)))
+;; (use-package lsp-treemacs
+;;   :after (lsp-mode treemacs)
+;;   :config (lsp-treemacs-sync-mode 1)
+;;   :bind
+;;   (:map lsp-mode-map
+;;         ("C-c t r" . lsp-treemacs-references)
+;;         ("C-c t i" . lsp-treemacs-implementations)
+;;         ("C-c t e" . lsp-treemacs-errors-list)
+;;         ("C-c t t" . lsp-treemacs-type-hierarchy)
+;;         ("C-c t h" . lsp-treemacs-call-hierarchy)))
 
 (use-package company-lsp)
 
 ;;; Programming language modes
+
+(use-package tree-sitter)
+(use-package tree-sitter-langs
+  :init (global-tree-sitter-mode)
+  :hook (tree-sitter-hl-mode tree-sitter-after-on-hook))
 
 (use-package haskell-mode)
 
@@ -544,12 +546,6 @@
         ("M-n" . elpy-flymake-next-error)
         ("M-p" . elpy-flymake-previous-error)
         ("C-c \\" . elpy-black-fix-code)))
-;; (use-package ein)
-;; TODO(MP): how to track down mumamo?
-;;
-;; (use-package nxhtml)
-;; (use-package ein-mumamo
-;;   :after (ein nxhtml))
 
 ;;; Org-mode
 (use-package org
@@ -567,6 +563,8 @@
   :init
   ;; Not sure how to make this happen using the :hook keyword
   (add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append))
+
+(use-package kubel)
 
 ;; (require 're-builder)
     ;; (setq reb-re-syntax 'string)
@@ -645,3 +643,15 @@ Null prefix argument turns off the mode."
 (garbage-collect)
 ;; 64 MB should be enough for anybody
 (setq gc-cons-threshold (* 1024 1024 64))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(warning-suppress-log-types '((emacs))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
