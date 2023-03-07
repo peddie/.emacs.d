@@ -67,16 +67,16 @@
         (make-directory --backup-directory t))
     (setq backup-directory-alist `(("." . ,--backup-directory)))
     (setq make-backup-files t               ; backup of a file the first time it is saved.
-      backup-by-copying t               ; don't clobber symlinks
-      version-control t                 ; version numbers for backup files
-      delete-old-versions t             ; delete excess backup files silently
-      kept-old-versions 6               ; oldest versions to keep when a new numbered backup is made (default: 2)
-      kept-new-versions 9               ; newest versions to keep when a new numbered backup is made (default: 2)
-      delete-auto-save-files t
-      auto-save-default t               ; auto-save every buffer that visits a file
-      auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
-      auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
-      )
+          backup-by-copying t               ; don't clobber symlinks
+          version-control t                 ; version numbers for backup files
+          delete-old-versions t             ; delete excess backup files silently
+          kept-old-versions 6               ; oldest versions to keep when a new numbered backup is made (default: 2)
+          kept-new-versions 9               ; newest versions to keep when a new numbered backup is made (default: 2)
+          delete-auto-save-files t
+          auto-save-default t               ; auto-save every buffer that visits a file
+          auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
+          auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+          )
     ;; (setq backup-directory-alist `((".*" . ,(concat emacs-root "backups/"))))
     (size-indication-mode)
     ;; (desktop-save-mode 1)
@@ -190,7 +190,13 @@
 (use-package deadgrep
   :bind ("C-c d" . deadgrep))
 
+(use-package compat)
+
+(use-package with-editor)
+
 (use-package magit
+  :ensure t
+  :after with-editor
   :bind ("C-c s" . magit-status)
   :config (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1))
 
@@ -219,22 +225,41 @@
 
 ;;; Input, commands, completion etc.
 
-(use-package selectrum
-  ;; TODO(MP) configure this to work more like ido did when looking
-  ;; for files
-  :init (selectrum-mode +1)
-  (setq selectrum-max-window-height 32)
-  :bind
-  ;; This pops the minibuffer completion list into its own buffer like
-  ;; ido does if you hammer TAB enough
-  (:map minibuffer-local-map
-        ([meta tab] . switch-to-completions)))
+;; (use-package selectrum
+;;   ;; TODO(MP) configure this to work more like ido did when looking
+;;   ;; for files
+;;   :init (selectrum-mode +1)
+;;   (setq selectrum-max-window-height 32)
+;;   :bind
+;;   ;; This pops the minibuffer completion list into its own buffer like
+;;   ;; ido does if you hammer TAB enough
+;;   (:map minibuffer-local-map
+;;         ([meta tab] . switch-to-completions)))
 
-(use-package selectrum-prescient
-  :after selectrum
-  :config
-  (selectrum-prescient-mode +1)
-  (prescient-persist-mode +1))
+;; (use-package selectrum-prescient
+;;   :after selectrum
+;;   :config
+;;   (selectrum-prescient-mode +1)
+;;   (prescient-persist-mode +1))
+
+(use-package vertico
+  :straight (:files (:defaults "extensions/*"))
+  :init
+  (vertico-mode)
+  (setq vertico-count 32)
+  (setq vertico-resize t))
+
+(use-package prescient
+  :init (prescient-persist-mode +1))
+
+(use-package vertico-prescient
+  :after (vertico prescient)
+  :config (vertico-prescient-mode))
+
+(use-package orderless
+  :ensure t
+  :custom (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package marginalia
   :hook
@@ -336,7 +361,7 @@
    consult-bookmark consult-recent-file consult-xref
    consult--source-bookmark consult--source-recent-file
    consult--source-project-recent-file
-   :preview-key (kbd "M-."))
+   :preview-key "M-.")
 
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
@@ -361,7 +386,7 @@
   )
 
 (use-package embark
-  :after selectrum
+  :after vertico
   
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
@@ -448,6 +473,8 @@
   (python-mode . lsp)
   (lsp-mode . lsp-enable-which-key-integration)
   :init
+  ;; TODO(@peddie) why is this never applied until after LSP has
+  ;; already started up and failed to do anything useful?
   (setq lsp-clients-clangd-args
         '("-j=8"
           "--pch-storage=memory"
@@ -494,7 +521,14 @@
   (setq lsp-ui-sideline-diagnostic-max-line-length 100
         lsp-ui-sideline-diagnostic-max-lines 5))
 
-; (use-package treemacs)
+(use-package consult-lsp
+  :after lsp-mode
+  :bind
+  (:map lsp-mode-map
+        ("C-c l o d" . consult-lsp-diagnostics)
+        ("C-C l o s" . consult-lsp-symbols)))
+
+;; (use-package treemacs)
 
 ;; (use-package lsp-treemacs
 ;;   :after (lsp-mode treemacs)
