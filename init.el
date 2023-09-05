@@ -60,7 +60,7 @@
     (setq mode-require-final-newline nil)
     (setq indicate-empty-lines t)
     (setq frame-title-format "emacs - %b")
-					;(normal-top-level-add-subdirs-to-load-path)
+                                        ;(normal-top-level-add-subdirs-to-load-path)
 
     ;; backup files
     (if (not (file-exists-p --backup-directory))
@@ -173,7 +173,8 @@
 
 (use-package whitespace
   :config (setq whitespace-style '(face empty tabs indentation::space lines-tail trailing))
-  (global-whitespace-mode t))
+  (global-whitespace-mode t)
+  :bind ("C-c w c" . whitespace-cleanup))
 
 (use-package htmlize)
 
@@ -206,13 +207,16 @@
   (setq auth-sources '("~/.authinfo"))
   :demand t)
 
+(use-package magit-lfs
+  :after magit)
+
 (use-package direnv
   :config
   (direnv-mode))
 
-(use-package elmacro
-  :config
-  (elmacro-mode))
+;; (use-package elmacro
+;;   :config
+;;   (elmacro-mode))
 
 (use-package multiple-cursors)
 (use-package mc-extras
@@ -387,7 +391,7 @@
 
 (use-package embark
   :after vertico
-  
+
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
    ("C-;" . embark-dwim)        ;; good alternative: M-.
@@ -476,14 +480,28 @@
   ;; TODO(@peddie) why is this never applied until after LSP has
   ;; already started up and failed to do anything useful?
   (setq lsp-clients-clangd-args
-        '("-j=8"
-          "--pch-storage=memory"
+        '("-j=6"
+          "--pch-storage=disk"
           "--header-insertion-decorators=0"
           "--header-insertion=never"
           "--clang-tidy"
           "--malloc-trim"
           "--background-index"
-          "--query-driver=/nix/store/hm20h5qvsqvbv8bkbppxn0p4rqfgsnpc-clang-wrapper-14.0.1/bin/clang++"))
+          "--background-index-priority=background"
+          "--query-driver=/nix/store/fdc528iwh63zzgss4w328q9dfcnn9b3g-clang-wrapper-16.0.6/bin/clang++"))
+  :config
+  ;; TODO(@peddie) why is this never applied until after LSP has
+  ;; already started up and failed to do anything useful?
+  (setq lsp-clients-clangd-args
+        '("-j=6"
+          "--pch-storage=disk"
+          "--header-insertion-decorators=0"
+          "--header-insertion=never"
+          "--clang-tidy"
+          "--malloc-trim"
+          "--background-index"
+          "--background-index-priority=background"
+          "--query-driver=/nix/store/fdc528iwh63zzgss4w328q9dfcnn9b3g-clang-wrapper-16.0.6/bin/clang++"))
   :bind
   (:map lsp-mode-map
         ("C-c l p" . lsp-describe-thing-at-point)
@@ -555,7 +573,10 @@
 (use-package rust-mode)
 
 (use-package ess
-  :config (ess-toggle-underscore nil))
+  :config (ess-toggle-underscore nil)
+  :hook (inferior-ess-mode . (lambda ()
+                               (setq-local ansi-color-for-comint-mode 'filter))))
+
 ;; (use-package ess-smart-underscore
 ;;   :after ess)
 (use-package poly-R
@@ -600,6 +621,18 @@
 
 (use-package kubel)
 
+(use-package emacs-gc-stats
+  :init (emacs-gc-stats-mode +1)
+  :config (setq emacs-gs-stats-gc-defaults 'emacs-defaults))
+
+(use-package realgud)
+
+;; Crashes on use
+;;
+;; (use-package s3ed
+;;   :init
+;;   (s3ed-mode))
+
 ;; (require 're-builder)
     ;; (setq reb-re-syntax 'string)
 
@@ -640,7 +673,7 @@ one step, else indent 'correctly'"
   (interactive
    (if mark-active (list (region-beginning) (region-end))
      (list (line-beginning-position)
-	   (line-beginning-position 2)))))
+           (line-beginning-position 2)))))
 
 ;;; https://anirudhsasikumar.net/blog/2005.01.21.html
 (define-minor-mode sensitive-mode
@@ -658,16 +691,16 @@ Null prefix argument turns off the mode."
   nil
   (if (symbol-value sensitive-mode)
       (progn
-	;; disable backups
-	(set (make-local-variable 'backup-inhibited) t)	
-	;; disable auto-save
-	(if auto-save-default
-	    (auto-save-mode -1)))
+        ;; disable backups
+        (set (make-local-variable 'backup-inhibited) t)
+        ;; disable auto-save
+        (if auto-save-default
+            (auto-save-mode -1)))
     ;resort to default value of backup-inhibited
     (kill-local-variable 'backup-inhibited)
     ;resort to default auto save setting
     (if auto-save-default
-	(auto-save-mode 1))))
+        (auto-save-mode 1))))
 
 (setq auto-mode-alist
       (append '(("\\.gpg$" . sensitive-mode)
@@ -682,6 +715,7 @@ Null prefix argument turns off the mode."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(auth-source-save-behavior nil)
  '(warning-suppress-log-types '((emacs))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
