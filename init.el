@@ -619,7 +619,7 @@
   ;; Not sure how to make this happen using the :hook keyword
   (add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append))
 
-(use-package kubel)
+(use-package kubernetes)
 
 (use-package emacs-gc-stats
   :init (emacs-gc-stats-mode +1)
