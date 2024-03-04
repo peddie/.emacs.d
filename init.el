@@ -492,7 +492,7 @@
           "--malloc-trim"
           "--background-index"
           "--background-index-priority=background"
-          "--query-driver=/nix/store/fdc528iwh63zzgss4w328q9dfcnn9b3g-clang-wrapper-16.0.6/bin/clang++"))
+          "--query-driver=/nix/store/09n3varkcqmpnwklmr5db2xj50ilm5h8-clang-wrapper-17.0.6/bin/clang++"))
   :config
   ;; TODO(@peddie) why is this never applied until after LSP has
   ;; already started up and failed to do anything useful?
@@ -505,7 +505,7 @@
           "--malloc-trim"
           "--background-index"
           "--background-index-priority=background"
-          "--query-driver=/nix/store/fdc528iwh63zzgss4w328q9dfcnn9b3g-clang-wrapper-16.0.6/bin/clang++"))
+          "--query-driver=/nix/store/09n3varkcqmpnwklmr5db2xj50ilm5h8-clang-wrapper-17.0.6/bin/clang++"))
   :bind
   (:map lsp-mode-map
         ("C-c l p" . lsp-describe-thing-at-point)
