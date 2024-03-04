@@ -587,7 +587,7 @@
 (use-package rust-mode)
 
 (use-package ess
-  :config (ess-toggle-underscore nil)
+  :config (setq ess-toggle-underscore nil)
   :hook (inferior-ess-mode . (lambda ()
                                (setq-local ansi-color-for-comint-mode 'filter))))
 
@@ -627,7 +627,7 @@
    '((emacs-lisp . t)
      (ditaa . t)
      (haskell . t)
-     (stan . t)
+     ; (stan . t)
      ; (jupyter . t)
      (python . t)))
   :custom
