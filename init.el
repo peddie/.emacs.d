@@ -210,6 +210,10 @@
 (use-package magit-lfs
   :after magit)
 
+(use-package magit-todos
+  :after magit
+  :config (magit-todos-mode 1))
+
 (use-package direnv
   :config
   (direnv-mode))
