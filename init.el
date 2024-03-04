@@ -596,6 +596,7 @@
 (use-package poly-R
   :after ess)
 
+(use-package csv-mode)
 (use-package yaml-mode)
 (use-package bazel)
 (use-package nix-mode
