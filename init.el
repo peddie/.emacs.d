@@ -565,6 +565,16 @@
 
 (use-package company-lsp)
 
+;; nil setup
+(use-package lsp-nix
+  :ensure lsp-mode
+  ;; Not a separate package.
+  :straight f
+  :after (lsp-mode)
+  :demand t
+  :custom
+  (lsp-nix-nil-formatter ["nixpkgs-fmt"]))
+
 ;;; Programming language modes
 
 (use-package tree-sitter)
@@ -591,7 +601,9 @@
 (use-package nix-mode
   :bind
   (:map nix-mode-map
-        ("C-c \\" . nix-format-buffer)))
+        ("C-c \\" . nix-format-buffer))
+  :hook (nix-mode . lsp-deferred)
+  :ensure t)
 (use-package markdown-mode)
 (use-package cmake-mode)
 (use-package stan-mode)
