@@ -489,6 +489,9 @@
   (haskell-mode . lsp-deferred)
   (c++-mode . lsp-deferred)
   (python-mode . lsp-deferred)
+  (haskell-ts-mode . lsp-deferred)
+  (c++-ts-mode . lsp-deferred)
+  (python-ts-mode . lsp-deferred)
   (lsp-mode . lsp-enable-which-key-integration)
   :init
   ;; TODO(@peddie) why is this never applied until after LSP has
@@ -577,6 +580,9 @@
 (use-package tree-sitter-langs
   :init (global-tree-sitter-mode)
   :hook (tree-sitter-hl-mode tree-sitter-after-on-hook))
+(use-package treesit-auto
+  :custom (treesit-auto-install 'prompt)
+  :config (treesit-auto-add-to-auto-mode-alist 'all) (global-treesit-auto-mode))
 
 (use-package haskell-mode)
 
