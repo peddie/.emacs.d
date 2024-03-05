@@ -473,39 +473,35 @@
                       :underline "red" :weight 'bold))
 
 ;; TODO(MP): figure out how to pull C++ query-driver information
+(setq clangd-args-list '("-j=6"
+          "--pch-storage=disk"
+          "--header-insertion-decorators=0"
+          "--header-insertion=never"
+          "--clang-tidy"
+          "--malloc-trim"
+          "--background-index"
+          "--background-index-priority=background"
+          "--query-driver=/nix/store/09n3varkcqmpnwklmr5db2xj50ilm5h8-clang-wrapper-17.0.6/bin/clang++"))
+
 (use-package lsp-mode
   :after flycheck
   :hook
-  (haskell-mode . lsp)
-  (c++-mode . lsp)
-  (python-mode . lsp)
+  (haskell-mode . lsp-deferred)
+  (c++-mode . lsp-deferred)
+  (python-mode . lsp-deferred)
   (lsp-mode . lsp-enable-which-key-integration)
   :init
   ;; TODO(@peddie) why is this never applied until after LSP has
   ;; already started up and failed to do anything useful?
-  (setq lsp-clients-clangd-args
-        '("-j=6"
-          "--pch-storage=disk"
-          "--header-insertion-decorators=0"
-          "--header-insertion=never"
-          "--clang-tidy"
-          "--malloc-trim"
-          "--background-index"
-          "--background-index-priority=background"
-          "--query-driver=/nix/store/09n3varkcqmpnwklmr5db2xj50ilm5h8-clang-wrapper-17.0.6/bin/clang++"))
+  (setq lsp-clients-clangd-args clangd-args-list)
+  (setq lsp-keymap-prefix "C-c e")
   :config
   ;; TODO(@peddie) why is this never applied until after LSP has
   ;; already started up and failed to do anything useful?
-  (setq lsp-clients-clangd-args
-        '("-j=6"
-          "--pch-storage=disk"
-          "--header-insertion-decorators=0"
-          "--header-insertion=never"
-          "--clang-tidy"
-          "--malloc-trim"
-          "--background-index"
-          "--background-index-priority=background"
-          "--query-driver=/nix/store/09n3varkcqmpnwklmr5db2xj50ilm5h8-clang-wrapper-17.0.6/bin/clang++"))
+  (setq lsp-clients-clangd-args clangd-args-list)
+  (setq lsp-keymap-prefix "C-c e")
+  :bind-keymap
+  ("C-c e" . lsp-command-map)
   :bind
   (:map lsp-mode-map
         ("C-c l p" . lsp-describe-thing-at-point)
@@ -528,7 +524,7 @@
      ;; ("pyls.plugins.pyls_mypy.live_mode" nil t)
      ("pyls.plugins.pyls_black.enabled" t t)
      ("pyls.plugins.pyls_isort.enabled" t t)))
-  :commands lsp)
+  :commands (lsp-deferred lsp))
 
 (use-package lsp-ui
   :after lsp-mode
