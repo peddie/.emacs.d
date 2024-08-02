@@ -640,10 +640,6 @@
 
 (use-package kubernetes)
 
-(use-package emacs-gc-stats
-  :init (emacs-gc-stats-mode +1)
-  :config (setq emacs-gs-stats-gc-defaults 'emacs-defaults))
-
 (use-package realgud)
 
 ;; Crashes on use
